@@ -2,7 +2,9 @@ package com.example.android.wellnessjournal;
 
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
+import android.support.v7.widget.Toolbar;
 import android.util.Log;
+import android.view.Menu;
 
 import com.example.android.wellnessjournal.Utils.BottomNavigationViewHelper;
 import com.ittianyu.bottomnavigationviewex.BottomNavigationViewEx;
@@ -17,6 +19,8 @@ public class HomeActivity extends AppCompatActivity {
         setContentView(R.layout.activity_home);
         Log.d(TAG, "onCreate: starting.");
 
+
+
         setupBottomNavigationView();
 
     }
@@ -27,4 +31,5 @@ public class HomeActivity extends AppCompatActivity {
         BottomNavigationViewEx bottomNavigationViewEx = (BottomNavigationViewEx) findViewById(R.id.bottomNavViewBar);
         BottomNavigationViewHelper.setupBottomNavigationView(bottomNavigationViewEx);
     }
+
 }

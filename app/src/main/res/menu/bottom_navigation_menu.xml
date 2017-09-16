@@ -25,7 +25,8 @@
     <item
         android:title=""
         android:id="@+id/ic_sport"
-        android:icon="@drawable/ic_sport">
+        android:icon="@drawable/ic_sport"
+        >
 
     </item>
 
