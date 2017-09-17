@@ -29,7 +29,7 @@
             android:layout_height="wrap_content"
             android:id="@+id/relLayout2">
 
-            <include layout="@layout/layout_center_viewpager"/>
+            <include layout="@layout/snipet_center_food"/>
 
         </RelativeLayout>
 

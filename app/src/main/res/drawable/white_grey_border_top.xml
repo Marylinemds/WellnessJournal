@@ -17,6 +17,11 @@
 
 
         </shape>
+
+
+        <solid
+            android:color="@color/white"
+            />
     </item>
 
 
