@@ -30,7 +30,6 @@ public class FoodActivity extends AppCompatActivity{
         setContentView(R.layout.activity_food);
         Log.d(TAG, "onCreate: started.");
 
-
         setupBottomNavigationView();
 
     }
