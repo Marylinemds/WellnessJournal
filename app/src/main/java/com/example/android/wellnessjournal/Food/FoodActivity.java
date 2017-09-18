@@ -4,11 +4,15 @@ import android.content.Context;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.v7.app.AppCompatActivity;
+import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.Toolbar;
 import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
+import android.view.View;
 import android.widget.ExpandableListView;
+import android.widget.TextView;
+import android.widget.Toast;
 import android.widget.ToggleButton;
 
 import com.example.android.wellnessjournal.ExpandableListAdapter;
@@ -35,6 +39,11 @@ public class FoodActivity extends AppCompatActivity{
     private List<String> listDataHeader;
     private HashMap<String,List<String>> listHash;
 
+    ToggleButton buttonGrid;
+    ToggleButton buttonList;
+
+    RecyclerView mPicturesGrid;
+
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -45,6 +54,42 @@ public class FoodActivity extends AppCompatActivity{
         initData();
         listAdapter = new ExpandableListAdapter(this,listDataHeader,listHash);
         listView.setAdapter(listAdapter);
+
+        mPicturesGrid = (RecyclerView) findViewById(R.id.rv_pictures);
+        buttonList = (ToggleButton) findViewById(R.id.toggleButtonList);
+        buttonGrid = (ToggleButton) findViewById(R.id.toggleButtonGrid);
+
+        buttonList.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                Toast.makeText(FoodActivity.this, "YEAAAAAAAH !", Toast.LENGTH_SHORT).show();
+
+                buttonList.setActivated(true);
+                buttonList.setChecked(true);
+                buttonGrid.setActivated(false);
+                buttonGrid.setChecked(false);
+
+                listView.setVisibility(view.VISIBLE);
+               mPicturesGrid.setVisibility(view.INVISIBLE);
+            }
+
+
+        });
+
+        buttonGrid.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                Toast.makeText(FoodActivity.this, "BOUUUH !", Toast.LENGTH_SHORT).show();
+
+                buttonGrid.setActivated(true);
+                buttonGrid.setChecked(true);
+                buttonList.setActivated(false);
+                buttonList.setChecked(false);
+
+                listView.setVisibility(view.INVISIBLE);
+                mPicturesGrid.setVisibility(view.VISIBLE);
+            }
+        });
 
         setupBottomNavigationView();
 
@@ -96,4 +141,36 @@ public class FoodActivity extends AppCompatActivity{
         listHash.put(listDataHeader.get(2),specialTreats);
         listHash.put(listDataHeader.get(3),generalComment);
     }
+
+
+    public void onClickSwitchToLis(){
+
+       /* buttonList = (ToggleButton) findViewById(R.id.toggleButtonList);
+        buttonList.setActivated(true);
+        buttonList.setChecked(true);
+        buttonGrid.setActivated(false);
+        buttonGrid.setChecked(false);
+
+        if (!buttonList.isActivated()){
+
+            Toast.makeText(this, "YEAAAAAAAH !", Toast.LENGTH_SHORT).show();
+
+    }
+*/
+
+    }
+
+    public void OnClickSwitchToGri(){
+     /*   buttonGrid = (ToggleButton) findViewById(R.id.toggleButtonGrid);
+        buttonGrid.setActivated(true);
+        buttonGrid.setChecked(true);
+        buttonList.setActivated(false);
+        buttonList.setChecked(false);
+
+        Toast.makeText(this, "Bouuuuuh !", Toast.LENGTH_SHORT).show();
+*/
+    }
+
+
+
 }

@@ -33,6 +33,7 @@
 
         <ToggleButton
             android:id="@+id/toggleButtonList"
+            android:onClick="onClickSwitchToList"
             android:layout_width="26dp"
             android:layout_height="26dp"
             android:layout_marginBottom="8dp"
@@ -51,6 +52,7 @@
 
         <ToggleButton
             android:id="@+id/toggleButtonGrid"
+            android:onClick="OnClickSwitchToGrid"
             android:layout_width="22dp"
             android:layout_height="22dp"
             android:layout_marginBottom="8dp"
@@ -130,6 +132,31 @@
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintLeft_toLeftOf="parent"
             app:layout_constraintRight_toRightOf="parent" />
+
+        <android.support.v7.widget.RecyclerView
+            android:layout_width="330dp"
+            android:layout_height="220dp"
+            android:id="@+id/rv_pictures"
+            android:layout_marginBottom="70dp"
+            android:layout_marginEnd="42dp"
+            android:layout_marginLeft="8dp"
+            android:layout_marginRight="8dp"
+            android:layout_marginStart="42dp"
+            android:addStatesFromChildren="false"
+            android:animateLayoutChanges="true"
+            android:background="@color/pink"
+            android:visibility="invisible"
+            android:divider="@color/grey"
+            android:dividerHeight="1dp"
+            android:footerDividersEnabled="false"
+            android:hapticFeedbackEnabled="false"
+            android:headerDividersEnabled="true"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintLeft_toLeftOf="parent"
+            app:layout_constraintRight_toRightOf="parent">
+
+        </android.support.v7.widget.RecyclerView>
+
     </android.support.constraint.ConstraintLayout>
 
 
