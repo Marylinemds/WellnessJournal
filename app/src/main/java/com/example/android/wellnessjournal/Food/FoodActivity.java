@@ -1,21 +1,22 @@
 package com.example.android.wellnessjournal.Food;
 
 import android.content.Context;
+import android.content.res.Configuration;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.v7.app.AppCompatActivity;
+import android.support.v7.widget.GridLayoutManager;
 import android.support.v7.widget.RecyclerView;
-import android.support.v7.widget.Toolbar;
 import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.ExpandableListView;
-import android.widget.TextView;
 import android.widget.Toast;
 import android.widget.ToggleButton;
 
 import com.example.android.wellnessjournal.ExpandableListAdapter;
+import com.example.android.wellnessjournal.PicturesAdapter;
 import com.example.android.wellnessjournal.R;
 import com.example.android.wellnessjournal.Utils.BottomNavigationViewHelper;
 import com.ittianyu.bottomnavigationviewex.BottomNavigationViewEx;
@@ -28,7 +29,7 @@ import java.util.List;
  * Created by Maryline on 9/16/2017.
  */
 
-public class FoodActivity extends AppCompatActivity{
+public class FoodActivity extends AppCompatActivity implements PicturesAdapter.ListItemClickHandler{
 
     private static final String TAG = "FoodActivity";
     private Context mContext = FoodActivity.this;
@@ -43,6 +44,7 @@ public class FoodActivity extends AppCompatActivity{
     ToggleButton buttonList;
 
     RecyclerView mPicturesGrid;
+    PicturesAdapter pictureAdapter;
 
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
@@ -50,12 +52,32 @@ public class FoodActivity extends AppCompatActivity{
         setContentView(R.layout.activity_food);
         Log.d(TAG, "onCreate: started.");
 
+
+
         listView = (ExpandableListView)findViewById(R.id.expandableListView);
         initData();
         listAdapter = new ExpandableListAdapter(this,listDataHeader,listHash);
         listView.setAdapter(listAdapter);
 
         mPicturesGrid = (RecyclerView) findViewById(R.id.rv_pictures);
+
+
+        GridLayoutManager layoutManager;
+
+        if (getResources().getConfiguration().orientation == Configuration.ORIENTATION_PORTRAIT) {
+            layoutManager = new GridLayoutManager(this, 3);
+        } else {
+            layoutManager = new GridLayoutManager(this, 4);
+        }
+
+        mPicturesGrid.setLayoutManager(layoutManager);
+
+        ArrayList<String> fakeData = createFakeData();
+
+        pictureAdapter = new PicturesAdapter(this);
+
+        mPicturesGrid.setAdapter(pictureAdapter);
+
         buttonList = (ToggleButton) findViewById(R.id.toggleButtonList);
         buttonGrid = (ToggleButton) findViewById(R.id.toggleButtonGrid);
 
@@ -88,10 +110,32 @@ public class FoodActivity extends AppCompatActivity{
 
                 listView.setVisibility(view.INVISIBLE);
                 mPicturesGrid.setVisibility(view.VISIBLE);
+
+
+
             }
         });
 
         setupBottomNavigationView();
+
+    }
+
+    private ArrayList<String> createFakeData(){
+
+        ArrayList<String> imgURLs = new ArrayList<>();
+        imgURLs.add("https://pbs.twimg.com/profile_images/616076655547682816/6gMRtQyY.jpg");
+        imgURLs.add("https://i.redd.it/9bf67ygj710z.jpg");
+        imgURLs.add("https://c1.staticflickr.com/5/4276/34102458063_7be616b993_o.jpg");
+        imgURLs.add("http://i.imgur.com/EwZRpvQ.jpg");
+        imgURLs.add("http://i.imgur.com/JTb2pXP.jpg");
+        imgURLs.add("https://i.redd.it/59kjlxxf720z.jpg");
+        imgURLs.add("https://i.redd.it/pwduhknig00z.jpg");
+        imgURLs.add("https://i.redd.it/clusqsm4oxzy.jpg");
+        imgURLs.add("https://i.redd.it/svqvn7xs420z.jpg");
+        imgURLs.add("http://i.imgur.com/j4AfH6P.jpg");
+        imgURLs.add("https://i.redd.it/89cjkojkl10z.jpg");
+        imgURLs.add("https://i.redd.it/aw7pv8jq4zzy.jpg");
+        return imgURLs;
 
     }
 
@@ -172,5 +216,8 @@ public class FoodActivity extends AppCompatActivity{
     }
 
 
+    @Override
+    public void onClick(int clickedItemIndex) {
 
+    }
 }

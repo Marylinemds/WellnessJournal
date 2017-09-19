@@ -70,7 +70,7 @@ public class ExpandableListAdapter extends BaseExpandableListAdapter {
             view = inflater.inflate(R.layout.food_expandablelist_group,null);
         }
         TextView lblListHeader = (TextView)view.findViewById(R.id.lblListHeader);
-        lblListHeader.setTypeface(null, Typeface.BOLD);
+        //lblListHeader.setTypeface(null, Typeface.BOLD);
         lblListHeader.setCompoundDrawablesWithIntrinsicBounds(0, 0,
                 R.drawable.ic_checkbox_off, 0);
         lblListHeader.setText(headerTitle);

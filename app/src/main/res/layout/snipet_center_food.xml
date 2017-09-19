@@ -133,29 +133,29 @@
             app:layout_constraintLeft_toLeftOf="parent"
             app:layout_constraintRight_toRightOf="parent" />
 
-        <android.support.v7.widget.RecyclerView
+        <LinearLayout
             android:layout_width="330dp"
             android:layout_height="220dp"
-            android:id="@+id/rv_pictures"
             android:layout_marginBottom="70dp"
             android:layout_marginEnd="42dp"
             android:layout_marginLeft="8dp"
             android:layout_marginRight="8dp"
             android:layout_marginStart="42dp"
-            android:addStatesFromChildren="false"
-            android:animateLayoutChanges="true"
-            android:background="@color/pink"
-            android:visibility="invisible"
-            android:divider="@color/grey"
-            android:dividerHeight="1dp"
-            android:footerDividersEnabled="false"
-            android:hapticFeedbackEnabled="false"
-            android:headerDividersEnabled="true"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintLeft_toLeftOf="parent"
             app:layout_constraintRight_toRightOf="parent">
 
+
+        <android.support.v7.widget.RecyclerView
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:id="@+id/rv_pictures"
+            android:visibility="invisible">
+
         </android.support.v7.widget.RecyclerView>
+
+        </LinearLayout>
+
 
     </android.support.constraint.ConstraintLayout>
 
