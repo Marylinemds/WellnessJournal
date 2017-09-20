@@ -24,10 +24,18 @@
 
         <!-- Middle section -->
 
+
         <RelativeLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:id="@+id/relLayout2">
+
+
+            <ImageView
+                android:id="@+id/testPicasso"
+                android:layout_width="100dp"
+                android:layout_height="100dp"
+                android:layout_centerInParent="true"/>
 
             <include layout="@layout/layout_center_viewpager"/>
 

@@ -1,0 +1,55 @@
+{
+  "project_info": {
+    "project_number": "841130182198",
+    "firebase_url": "https://wellnessjournal-f1b9d.firebaseio.com",
+    "project_id": "wellnessjournal-f1b9d",
+    "storage_bucket": "wellnessjournal-f1b9d.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:841130182198:android:cfb8c13cafc4ab5a",
+        "android_client_info": {
+          "package_name": "com.example.android.wellnessjournal"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "841130182198-03grojiqjovl14s872aog8r9f8q1qcf6.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.example.android.wellnessjournal",
+            "certificate_hash": "e5f513d88c26b6363814b3f2da06d17496a69281"
+          }
+        },
+        {
+          "client_id": "841130182198-76pb3hmjbk0of0cp6jv00fdfch6fdu8u.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyAPbk2KYXqs9sK_gZdCQTPU5W-DDH0loyc"
+        }
+      ],
+      "services": {
+        "analytics_service": {
+          "status": 1
+        },
+        "appinvite_service": {
+          "status": 2,
+          "other_platform_oauth_client": [
+            {
+              "client_id": "841130182198-76pb3hmjbk0of0cp6jv00fdfch6fdu8u.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        },
+        "ads_service": {
+          "status": 2
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
