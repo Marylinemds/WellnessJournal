@@ -14,6 +14,7 @@ import android.widget.ProgressBar;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.example.android.wellnessjournal.Home.HomeActivity;
 import com.example.android.wellnessjournal.R;
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.Task;
@@ -124,7 +125,7 @@ public class LoginActivity extends AppCompatActivity {
             }
         });
 
-        /*TextView linkSignUp = (TextView) findViewById(R.id.link_signup);
+        TextView linkSignUp = (TextView) findViewById(R.id.link_signup);
         linkSignUp.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -137,13 +138,13 @@ public class LoginActivity extends AppCompatActivity {
          /*
          If the user is logged in then navigate to HomeActivity and call 'finish()'
           */
-     /*   if(mAuth.getCurrentUser() != null){
+        if(mAuth.getCurrentUser() != null){
             Intent intent = new Intent(LoginActivity.this, HomeActivity.class);
             startActivity(intent);
             finish();
         }
 
-    */
+
 
     }
 

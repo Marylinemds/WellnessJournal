@@ -79,6 +79,26 @@
 
     </LinearLayout>
 
+    <ProgressBar
+        android:layout_width="100dp"
+        android:layout_height="100dp"
+        android:id="@+id/progressBar"
+        android:paddingBottom="20dp"
+        android:layout_alignBottom="@+id/pleaseWait"
+        android:layout_alignRight="@+id/pleaseWait"
+        android:layout_alignLeft="@+id/pleaseWait"/>
+
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Please wait..."
+        android:textColor="@color/black"
+        android:textSize="10sp"
+        android:layout_alignParentBottom="true"
+        android:paddingBottom="20dp"
+        android:id="@+id/pleaseWait"
+        android:layout_centerHorizontal="true"/>
+
 
 </RelativeLayout>
 
