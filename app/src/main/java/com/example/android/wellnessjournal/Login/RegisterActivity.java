@@ -15,6 +15,9 @@ import android.widget.Toast;
 
 import com.example.android.wellnessjournal.R;
 import com.example.android.wellnessjournal.Utils.FirebaseMethods;
+import com.example.android.wellnessjournal.Utils.StringManipulation;
+import com.example.android.wellnessjournal.models.User;
+import com.example.android.wellnessjournal.models.UserAccountSettings;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.database.DataSnapshot;
@@ -148,7 +151,7 @@ public class RegisterActivity extends AppCompatActivity {
                             username = username + append;
 
                             //add new user to the database
-                          //  FirebaseMethods.addNewUser(email, username, "", "", "");
+                            addNewUser(email, username, "", "", "");
 
                             Toast.makeText(mContext, "Signup successful. Sending verification email.", Toast.LENGTH_SHORT).show();
                             mAuth.signOut();
@@ -169,6 +172,35 @@ public class RegisterActivity extends AppCompatActivity {
                 // ...
             }
         };
+    }
+
+    public void addNewUser(String email, String username, String description, String website, String profile_photo){
+
+        String userID = mAuth.getCurrentUser().getUid();
+
+        User user = new User( userID,  1,  email,  StringManipulation.condenseUsername(username) );
+
+        myRef.child(mContext.getString(R.string.dbname_users))
+                .child(userID)
+                .setValue(user);
+
+
+        UserAccountSettings settings = new UserAccountSettings(
+                description,
+                username,
+                0,
+                0,
+                0,
+                profile_photo,
+                StringManipulation.condenseUsername(username),
+                website,
+                userID
+        );
+
+        myRef.child(mContext.getString(R.string.dbname_user_account_settings))
+                .child(userID)
+                .setValue(settings);
+
     }
 
     @Override
