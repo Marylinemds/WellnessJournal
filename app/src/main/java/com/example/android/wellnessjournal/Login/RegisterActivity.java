@@ -14,8 +14,14 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import com.example.android.wellnessjournal.R;
+import com.example.android.wellnessjournal.Utils.FirebaseMethods;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
+import com.google.firebase.database.DataSnapshot;
+import com.google.firebase.database.DatabaseError;
+import com.google.firebase.database.DatabaseReference;
+import com.google.firebase.database.FirebaseDatabase;
+import com.google.firebase.database.ValueEventListener;
 
 import static com.example.android.wellnessjournal.R.layout.activity_register;
 
@@ -33,10 +39,16 @@ public class RegisterActivity extends AppCompatActivity {
     private TextView loadingPleaseWait;
     private Button btnRegister;
     private ProgressBar mProgressBar;
+    private FirebaseMethods FirebaseMethods;
 
     //firebase
     private FirebaseAuth mAuth;
     private FirebaseAuth.AuthStateListener mAuthListener;
+    private FirebaseDatabase mFirebaseDatabase;
+    private DatabaseReference myRef;
+
+    private String append = "";
+
 
 
     @Override
@@ -44,7 +56,11 @@ public class RegisterActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(activity_register);
 
+        FirebaseMethods = new FirebaseMethods(mContext);
+
+
         initWidgets();
+        init();
         setupFirebaseAuth();
 
         Log.d(TAG, "onCreate: created.");
@@ -67,7 +83,33 @@ public class RegisterActivity extends AppCompatActivity {
 
     }
 
+    private void init(){
+        btnRegister.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                email = mEmail.getText().toString();
+                username = mUsername.getText().toString();
+                password = mPassword.getText().toString();
 
+                if(checkInputs(email, username, password)){
+                    mProgressBar.setVisibility(View.VISIBLE);
+                    loadingPleaseWait.setVisibility(View.VISIBLE);
+
+                    FirebaseMethods.registerNewEmail(email, password, username);
+
+                }
+            }
+        });
+    }
+
+    private boolean checkInputs(String email, String username, String password){
+        Log.d(TAG, "checkInputs: checking inputs for null values.");
+        if(email.equals("") || username.equals("") || password.equals("")){
+            Toast.makeText(mContext, "All fields must be filled out.", Toast.LENGTH_SHORT).show();
+            return false;
+        }
+        return true;
+    }
 
     /*------------------------------------ Firebase ---------------------------------------------
             */
@@ -79,6 +121,8 @@ public class RegisterActivity extends AppCompatActivity {
         Log.d(TAG, "setupFirebaseAuth: setting up firebase auth.");
 
         mAuth = FirebaseAuth.getInstance();
+        mFirebaseDatabase = FirebaseDatabase.getInstance();
+        myRef = mFirebaseDatabase.getReference();
 
         mAuthListener = new FirebaseAuth.AuthStateListener() {
             @Override
@@ -89,9 +133,28 @@ public class RegisterActivity extends AppCompatActivity {
                     // User is signed in
                     Log.d(TAG, "onAuthStateChanged:signed_in:" + user.getUid());
 
+                    myRef.addListenerForSingleValueEvent(new ValueEventListener() {
+                        @Override
+                        public void onDataChange(DataSnapshot dataSnapshot) {
+                            //1st check: Make sure the username is not already in use
+                            if(FirebaseMethods.checkIfUsernameExists(username, dataSnapshot)){
+                                append = myRef.push().getKey().substring(3,10);
+                                Log.d(TAG, "onDataChange: username already exists. Appending random string to name: " + append);
+                            }
+                            username = username + append;
 
-                    Toast.makeText(mContext, "Signup successful. Sending verification email.", Toast.LENGTH_SHORT).show();
+                            //add new user to the database
+                            FirebaseMethods.addNewUser(email, username, "", "", "");
 
+                            Toast.makeText(mContext, "Signup successful. Sending verification email.", Toast.LENGTH_SHORT).show();
+
+                        }
+
+                        @Override
+                        public void onCancelled(DatabaseError databaseError) {
+
+                        }
+                    });
 
                 } else {
                     // User is signed out
