@@ -97,9 +97,13 @@ public class RegisterActivity extends AppCompatActivity {
 
                     FirebaseMethods.registerNewEmail(email, password, username);
 
+
                 }
+
             }
         });
+
+
     }
 
     private boolean checkInputs(String email, String username, String password){
@@ -144,10 +148,10 @@ public class RegisterActivity extends AppCompatActivity {
                             username = username + append;
 
                             //add new user to the database
-                            FirebaseMethods.addNewUser(email, username, "", "", "");
+                          //  FirebaseMethods.addNewUser(email, username, "", "", "");
 
                             Toast.makeText(mContext, "Signup successful. Sending verification email.", Toast.LENGTH_SHORT).show();
-
+                            mAuth.signOut();
                         }
 
                         @Override
@@ -155,6 +159,8 @@ public class RegisterActivity extends AppCompatActivity {
 
                         }
                     });
+
+                    finish();
 
                 } else {
                     // User is signed out
