@@ -1,9 +1,18 @@
 package com.example.android.wellnessjournal.Food;
 
+import android.Manifest;
+import android.content.ContentValues;
 import android.content.Context;
+import android.content.Intent;
+import android.content.pm.PackageManager;
 import android.content.res.Configuration;
+import android.database.Cursor;
+import android.graphics.Bitmap;
+import android.net.Uri;
 import android.os.Bundle;
+import android.provider.MediaStore;
 import android.support.annotation.Nullable;
+import android.support.v4.app.ActivityCompat;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.GridLayoutManager;
 import android.support.v7.widget.RecyclerView;
@@ -12,15 +21,22 @@ import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.ExpandableListView;
+import android.widget.ImageButton;
+import android.widget.ImageView;
 import android.widget.Toast;
 import android.widget.ToggleButton;
 
 import com.example.android.wellnessjournal.ExpandableListAdapter;
+import com.example.android.wellnessjournal.MyImage;
 import com.example.android.wellnessjournal.PicturesAdapter;
 import com.example.android.wellnessjournal.R;
 import com.example.android.wellnessjournal.Utils.BottomNavigationViewHelper;
 import com.ittianyu.bottomnavigationviewex.BottomNavigationViewEx;
+import com.kosalgeek.android.photoutil.CameraPhoto;
+import com.kosalgeek.android.photoutil.ImageLoader;
 
+import java.io.FileNotFoundException;
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -40,11 +56,19 @@ public class FoodActivity extends AppCompatActivity implements PicturesAdapter.L
     private List<String> listDataHeader;
     private HashMap<String,List<String>> listHash;
 
+    private List<MyImage> images;
+
     ToggleButton buttonGrid;
     ToggleButton buttonList;
 
     RecyclerView mPicturesGrid;
     PicturesAdapter pictureAdapter;
+
+    ImageView ibCamera;
+
+    final int CAMERA_REQUEST = 1100;
+
+    private Uri mCapturedImageURI;
 
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
@@ -53,10 +77,9 @@ public class FoodActivity extends AppCompatActivity implements PicturesAdapter.L
         Log.d(TAG, "onCreate: started.");
 
 
-
-        listView = (ExpandableListView)findViewById(R.id.expandableListView);
+        listView = (ExpandableListView) findViewById(R.id.expandableListView);
         initData();
-        listAdapter = new ExpandableListAdapter(this,listDataHeader,listHash);
+        listAdapter = new ExpandableListAdapter(this, listDataHeader, listHash);
         listView.setAdapter(listAdapter);
 
         mPicturesGrid = (RecyclerView) findViewById(R.id.rv_pictures);
@@ -72,9 +95,9 @@ public class FoodActivity extends AppCompatActivity implements PicturesAdapter.L
 
         mPicturesGrid.setLayoutManager(layoutManager);
 
-        ArrayList<String> fakeData = createFakeData();
+        images = new ArrayList<>();
 
-        pictureAdapter = new PicturesAdapter(this);
+        pictureAdapter = new PicturesAdapter(images, this);
 
         mPicturesGrid.setAdapter(pictureAdapter);
 
@@ -92,7 +115,7 @@ public class FoodActivity extends AppCompatActivity implements PicturesAdapter.L
                 buttonGrid.setChecked(false);
 
                 listView.setVisibility(view.VISIBLE);
-               mPicturesGrid.setVisibility(view.INVISIBLE);
+                mPicturesGrid.setVisibility(view.INVISIBLE);
             }
 
 
@@ -112,32 +135,75 @@ public class FoodActivity extends AppCompatActivity implements PicturesAdapter.L
                 mPicturesGrid.setVisibility(view.VISIBLE);
 
 
-
             }
         });
 
         setupBottomNavigationView();
 
+        ibCamera = (ImageView) findViewById(R.id.ic_camera);
+
+
+        ibCamera.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                activeTakePhoto();
+
+            }
+        });
     }
 
-    private ArrayList<String> createFakeData(){
 
-        ArrayList<String> imgURLs = new ArrayList<>();
-        imgURLs.add("https://pbs.twimg.com/profile_images/616076655547682816/6gMRtQyY.jpg");
-        imgURLs.add("https://i.redd.it/9bf67ygj710z.jpg");
-        imgURLs.add("https://c1.staticflickr.com/5/4276/34102458063_7be616b993_o.jpg");
-        imgURLs.add("http://i.imgur.com/EwZRpvQ.jpg");
-        imgURLs.add("http://i.imgur.com/JTb2pXP.jpg");
-        imgURLs.add("https://i.redd.it/59kjlxxf720z.jpg");
-        imgURLs.add("https://i.redd.it/pwduhknig00z.jpg");
-        imgURLs.add("https://i.redd.it/clusqsm4oxzy.jpg");
-        imgURLs.add("https://i.redd.it/svqvn7xs420z.jpg");
-        imgURLs.add("http://i.imgur.com/j4AfH6P.jpg");
-        imgURLs.add("https://i.redd.it/89cjkojkl10z.jpg");
-        imgURLs.add("https://i.redd.it/aw7pv8jq4zzy.jpg");
-        return imgURLs;
+    private void activeTakePhoto() {
+        Intent takePictureIntent = new Intent(MediaStore.ACTION_IMAGE_CAPTURE);
+        if (ActivityCompat.checkSelfPermission(this, Manifest.permission.CAMERA) != PackageManager.PERMISSION_GRANTED && ActivityCompat.checkSelfPermission(this, Manifest.permission.WRITE_EXTERNAL_STORAGE) != PackageManager.PERMISSION_GRANTED) {
+            ActivityCompat.requestPermissions(FoodActivity.this, new String[]{Manifest.permission.CAMERA, Manifest.permission.WRITE_EXTERNAL_STORAGE}, 300);
+            return;
+        }
+        if (takePictureIntent.resolveActivity(getPackageManager()) != null) {
+            String fileName = "temp.jpg";
+            ContentValues values = new ContentValues();
+            values.put(MediaStore.Images.Media.TITLE, fileName);
+            mCapturedImageURI = getContentResolver()
+                    .insert(MediaStore.Images.Media.EXTERNAL_CONTENT_URI,
+                            values);
+            takePictureIntent
+                    .putExtra(MediaStore.EXTRA_OUTPUT, mCapturedImageURI);
+
+            startActivityForResult(takePictureIntent, CAMERA_REQUEST);
+
+        }
 
     }
+
+    @Override
+    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
+        if(resultCode == RESULT_OK){
+            if(requestCode == CAMERA_REQUEST){
+
+                    String[] projection = {MediaStore.Images.Media.DATA};
+                    Cursor cursor =
+                            getContentResolver().query(mCapturedImageURI, projection, null,
+                                    null, null);
+                    int column_index_data = cursor.getColumnIndexOrThrow(
+                            MediaStore.Images.Media.DATA);
+                    cursor.moveToFirst();
+                    String picturePath = cursor.getString(column_index_data);
+                    MyImage image = new MyImage();
+                    image.setTitle("Test");
+                    image.setDescription(
+                            "test take a photo and add it to list view");
+                    image.setDatetime(System.currentTimeMillis());
+                    image.setPath(picturePath);
+                    image.setPictureUri(mCapturedImageURI);
+                    images.add(image);
+
+
+            }
+        }//end if resultCode
+        pictureAdapter.setImages(images);
+    }
+
+
 
     private void setupBottomNavigationView(){
         Log.d(TAG, "setupBottomNavigationView: settingupBottomNavigationBar");
@@ -186,34 +252,6 @@ public class FoodActivity extends AppCompatActivity implements PicturesAdapter.L
         listHash.put(listDataHeader.get(3),generalComment);
     }
 
-
-    public void onClickSwitchToLis(){
-
-       /* buttonList = (ToggleButton) findViewById(R.id.toggleButtonList);
-        buttonList.setActivated(true);
-        buttonList.setChecked(true);
-        buttonGrid.setActivated(false);
-        buttonGrid.setChecked(false);
-
-        if (!buttonList.isActivated()){
-
-            Toast.makeText(this, "YEAAAAAAAH !", Toast.LENGTH_SHORT).show();
-
-    }
-*/
-
-    }
-
-    public void OnClickSwitchToGri(){
-     /*   buttonGrid = (ToggleButton) findViewById(R.id.toggleButtonGrid);
-        buttonGrid.setActivated(true);
-        buttonGrid.setChecked(true);
-        buttonList.setActivated(false);
-        buttonList.setChecked(false);
-
-        Toast.makeText(this, "Bouuuuuh !", Toast.LENGTH_SHORT).show();
-*/
-    }
 
 
     @Override

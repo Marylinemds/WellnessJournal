@@ -28,7 +28,7 @@
             android:layout_marginRight="8dp"
             app:layout_constraintHorizontal_bias="0.3" />
 
-        <ImageButton
+        <ImageView
             android:id="@+id/ic_camera"
             android:layout_width="25dp"
             android:layout_height="25dp"

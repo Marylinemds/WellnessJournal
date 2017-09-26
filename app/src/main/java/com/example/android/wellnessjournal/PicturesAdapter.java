@@ -7,6 +7,7 @@ import android.graphics.BitmapFactory;
 import android.graphics.drawable.BitmapDrawable;
 import android.graphics.drawable.Drawable;
 import android.media.Image;
+import android.media.ThumbnailUtils;
 import android.support.v7.widget.RecyclerView;
 import android.util.Log;
 import android.view.LayoutInflater;
@@ -32,11 +33,24 @@ public class PicturesAdapter extends RecyclerView.Adapter<PicturesAdapter.ImageV
 
     private static final String TAG="PicturesAdapter";
 
+    public List<MyImage> getImages() {
+        return images;
+    }
+
+    public void setImages(List<MyImage> images) {
+        this.images = images;
+        notifyDataSetChanged();
+    }
+
+    private List<MyImage> images;
+
+
 
     final private ListItemClickHandler mOnClickHandler;
     private Cursor mCursor;
 
-    public PicturesAdapter(ListItemClickHandler listener){
+    public PicturesAdapter(List<MyImage> images, ListItemClickHandler listener){
+        this.images = images;
 
         mOnClickHandler = listener;
         //this.imgURLs = imgURLs;
@@ -69,9 +83,14 @@ public class PicturesAdapter extends RecyclerView.Adapter<PicturesAdapter.ImageV
         Context context = viewHolder.poster.getContext();
         Log.d(TAG, "onBindViewHolder: binding ImageViewHolder");
 
+        MyImage image = images.get(position);
+        image.getPictureUri();
 
-        Picasso.with(context).load("https://upload.wikimedia.org/wikipedia/commons/thumb/2/20/S" +
-                "aimiri_sciureus-1_Luc_Viatour.jpg/640px-Saimiri_sciureus-1_Luc_Viatour.jpg").into(viewHolder.poster);
+        //Picasso.with(context).load(image.getPictureUri()).into(viewHolder.poster);
+
+        viewHolder.poster.setImageBitmap(ThumbnailUtils
+                .extractThumbnail(BitmapFactory.decodeFile(image.getPath()),
+                        300, 300));
 
 
 
@@ -79,7 +98,7 @@ public class PicturesAdapter extends RecyclerView.Adapter<PicturesAdapter.ImageV
 
     @Override
     public int getItemCount() {
-        return 10;
+        return images.size();
     }
 
 
