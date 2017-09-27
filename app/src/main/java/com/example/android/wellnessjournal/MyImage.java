@@ -10,13 +10,30 @@ import java.util.Calendar;
  */
 
 public class MyImage {
-    private String title, description, path;
+    private String title, description, path, photo_id, user_id;
     private Calendar datetime;
     private long datetimeLong;
     protected SimpleDateFormat df = new SimpleDateFormat("MMMM d, yy  h:mm");
 
+    public String getPhoto_id() {
+        return photo_id;
+    }
+
+    public void setPhoto_id(String photo_id) {
+        this.photo_id = photo_id;
+    }
+
+    public String getUser_id() {
+        return user_id;
+    }
+
+    public void setUser_id(String user_id) {
+        this.user_id = user_id;
+    }
+
     public Uri getPictureUri() {
         return pictureUri;
+
     }
 
     public void setPictureUri(Uri pictureUri) {
@@ -106,9 +123,17 @@ public class MyImage {
      */
     public String getPath() { return path; }
 
-    @Override public String toString() {
-        return "Title:" + title + "   " + df.format(datetime.getTime()) +
-                "\nDescription:" + description + "\nPath:" + path;
+    @Override
+    public String toString() {
+        return "MyImage{" +
+                "title='" + title + '\'' +
+                ", description='" + description + '\'' +
+                ", path='" + path + '\'' +
+                ", photo_id='" + photo_id + '\'' +
+                ", user_id='" + user_id + '\'' +
+                ", datetimeLong=" + datetimeLong +
+                ", pictureUri=" + pictureUri +
+                '}';
     }
 }
 

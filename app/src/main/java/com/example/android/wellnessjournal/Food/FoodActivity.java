@@ -33,11 +33,19 @@ import android.widget.Toast;
 import android.widget.ToggleButton;
 
 import com.example.android.wellnessjournal.ExpandableListAdapter;
+import com.example.android.wellnessjournal.Login.LoginActivity;
 import com.example.android.wellnessjournal.MyImage;
 import com.example.android.wellnessjournal.PicturesAdapter;
 import com.example.android.wellnessjournal.R;
 import com.example.android.wellnessjournal.Utils.BottomNavigationViewHelper;
+import com.example.android.wellnessjournal.Utils.FirebaseMethods;
 import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.auth.FirebaseUser;
+import com.google.firebase.database.DataSnapshot;
+import com.google.firebase.database.DatabaseError;
+import com.google.firebase.database.DatabaseReference;
+import com.google.firebase.database.FirebaseDatabase;
+import com.google.firebase.database.ValueEventListener;
 import com.ittianyu.bottomnavigationviewex.BottomNavigationViewEx;
 import com.kosalgeek.android.photoutil.CameraPhoto;
 import com.kosalgeek.android.photoutil.ImageLoader;
@@ -75,13 +83,17 @@ public class FoodActivity extends AppCompatActivity implements PicturesAdapter.L
     private ActionBarDrawerToggle mToggle;
     NavigationView navigationView;
     private FirebaseAuth mAuth;
+    private FirebaseDatabase mFirebaseDatabase;
     private FirebaseAuth.AuthStateListener mAuthListener;
+    private DatabaseReference myRef;
+    private FirebaseMethods mFirebaseMethods;
 
     ImageView ibCamera;
 
     final int CAMERA_REQUEST = 1100;
 
     private Uri mCapturedImageURI;
+    private int imageCount = 0;
 
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
@@ -169,6 +181,7 @@ public class FoodActivity extends AppCompatActivity implements PicturesAdapter.L
 
 
 
+
         ibCamera = (ImageView) findViewById(R.id.ic_camera);
 
 
@@ -179,6 +192,10 @@ public class FoodActivity extends AppCompatActivity implements PicturesAdapter.L
 
             }
         });
+
+        mFirebaseMethods = new FirebaseMethods(this);
+
+        setupFirebaseAuth();
     }
 
 
@@ -319,6 +336,54 @@ public class FoodActivity extends AppCompatActivity implements PicturesAdapter.L
             drawer.closeDrawer(GravityCompat.START);
         } else {
             super.onBackPressed();
+        }
+    }
+
+    private void setupFirebaseAuth(){
+        mAuth = FirebaseAuth.getInstance();
+        mFirebaseDatabase = FirebaseDatabase.getInstance();
+        myRef = mFirebaseDatabase.getReference();
+        myRef.addValueEventListener(new ValueEventListener() {
+            @Override
+            public void onDataChange(DataSnapshot dataSnapshot) {
+                imageCount = mFirebaseMethods.getImageCount(dataSnapshot);
+                Log.d(TAG, "onDataChange: image count: " + imageCount);
+            }
+
+            @Override
+            public void onCancelled(DatabaseError databaseError) {
+
+            }
+        });
+
+
+
+        mAuthListener = new FirebaseAuth.AuthStateListener() {
+            @Override
+            public void onAuthStateChanged(@NonNull FirebaseAuth firebaseAuth) {
+                FirebaseUser user = firebaseAuth.getCurrentUser();
+
+                checkCurrentUser(user);
+
+                if (user != null) {
+                    // User is signed in
+                    Log.d(TAG, "onAuthStateChanged:signed_in:" + user.getUid());
+                } else {
+                    // User is signed out
+                    Log.d(TAG, "onAuthStateChanged:signed_out");
+                }
+                // ...
+            }
+        };
+
+    }
+
+    private void checkCurrentUser(FirebaseUser user){
+        Log.d(TAG, "checkCurrentUser: checking if user is logged in.");
+
+        if(user == null){
+            Intent intent = new Intent(mContext, LoginActivity.class);
+            startActivity(intent);
         }
     }
 }
