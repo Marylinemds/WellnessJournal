@@ -11,11 +11,17 @@ import android.graphics.Bitmap;
 import android.net.Uri;
 import android.os.Bundle;
 import android.provider.MediaStore;
+import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
+import android.support.design.widget.NavigationView;
 import android.support.v4.app.ActivityCompat;
+import android.support.v4.view.GravityCompat;
+import android.support.v4.widget.DrawerLayout;
+import android.support.v7.app.ActionBarDrawerToggle;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.GridLayoutManager;
 import android.support.v7.widget.RecyclerView;
+import android.support.v7.widget.Toolbar;
 import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
@@ -31,6 +37,7 @@ import com.example.android.wellnessjournal.MyImage;
 import com.example.android.wellnessjournal.PicturesAdapter;
 import com.example.android.wellnessjournal.R;
 import com.example.android.wellnessjournal.Utils.BottomNavigationViewHelper;
+import com.google.firebase.auth.FirebaseAuth;
 import com.ittianyu.bottomnavigationviewex.BottomNavigationViewEx;
 import com.kosalgeek.android.photoutil.CameraPhoto;
 import com.kosalgeek.android.photoutil.ImageLoader;
@@ -45,7 +52,7 @@ import java.util.List;
  * Created by Maryline on 9/16/2017.
  */
 
-public class FoodActivity extends AppCompatActivity implements PicturesAdapter.ListItemClickHandler{
+public class FoodActivity extends AppCompatActivity implements PicturesAdapter.ListItemClickHandler , NavigationView.OnNavigationItemSelectedListener{
 
     private static final String TAG = "FoodActivity";
     private Context mContext = FoodActivity.this;
@@ -63,6 +70,12 @@ public class FoodActivity extends AppCompatActivity implements PicturesAdapter.L
 
     RecyclerView mPicturesGrid;
     PicturesAdapter pictureAdapter;
+
+    private DrawerLayout mDrawerLayout;
+    private ActionBarDrawerToggle mToggle;
+    NavigationView navigationView;
+    private FirebaseAuth mAuth;
+    private FirebaseAuth.AuthStateListener mAuthListener;
 
     ImageView ibCamera;
 
@@ -138,7 +151,23 @@ public class FoodActivity extends AppCompatActivity implements PicturesAdapter.L
             }
         });
 
+
+        Toolbar toptoolbar = (Toolbar) findViewById(R.id.top_toolbar);
+        setSupportActionBar(toptoolbar);
+
+        mDrawerLayout = (DrawerLayout) findViewById(R.id.drawer);
+        mToggle = new ActionBarDrawerToggle(this, mDrawerLayout, R.string.open, R.string.close);
+        mDrawerLayout.addDrawerListener(mToggle);
+        mToggle.syncState();
+        getSupportActionBar().setDisplayHomeAsUpEnabled(true);
+
+        navigationView = (NavigationView) findViewById(R.id.nav_view);
+        navigationView.setNavigationItemSelectedListener(this);
+
         setupBottomNavigationView();
+
+
+
 
         ibCamera = (ImageView) findViewById(R.id.ic_camera);
 
@@ -257,5 +286,39 @@ public class FoodActivity extends AppCompatActivity implements PicturesAdapter.L
     @Override
     public void onClick(int clickedItemIndex) {
 
+    }
+
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+
+        if (mToggle.onOptionsItemSelected(item)) {
+            return true;
+        }
+        return super.onOptionsItemSelected(item);
+    }
+
+    @SuppressWarnings("StatementWithEmptyBody")
+    @Override
+    public boolean onNavigationItemSelected(@NonNull MenuItem item) {
+
+        int Id = item.getItemId();
+
+        if (Id== R.id.sign_out){
+            mAuth.signOut();
+        }
+
+
+        mDrawerLayout.closeDrawer(GravityCompat.START);
+        return true;
+    }
+
+    @Override
+    public void onBackPressed() {
+        DrawerLayout drawer = (DrawerLayout) findViewById(R.id.drawer);
+        if (drawer.isDrawerOpen(GravityCompat.START)) {
+            drawer.closeDrawer(GravityCompat.START);
+        } else {
+            super.onBackPressed();
+        }
     }
 }
