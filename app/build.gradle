@@ -35,4 +35,7 @@ dependencies {
     compile 'com.google.firebase:firebase-database:10.2.6'
     apply plugin: 'com.google.gms.google-services'
     compile files('libs/PhotoUtil.jar')
+
+    //firebase storage
+    compile 'com.google.firebase:firebase-storage:10.2.6'
 }
