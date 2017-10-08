@@ -27,6 +27,7 @@ import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
+import android.widget.Button;
 import android.widget.ExpandableListView;
 import android.widget.ImageButton;
 import android.widget.ImageView;
@@ -92,6 +93,7 @@ public class FoodActivity extends AppCompatActivity implements PicturesAdapter.L
     private FirebaseMethods mFirebaseMethods;
 
     ImageView ibCamera;
+
 
     final int CAMERA_REQUEST = 1100;
 
@@ -184,8 +186,8 @@ public class FoodActivity extends AppCompatActivity implements PicturesAdapter.L
 
 
 
-
         ibCamera = (ImageView) findViewById(R.id.ic_camera);
+
 
 
         ibCamera.setOnClickListener(new View.OnClickListener() {
@@ -196,13 +198,14 @@ public class FoodActivity extends AppCompatActivity implements PicturesAdapter.L
             }
         });
 
+
         mFirebaseMethods = new FirebaseMethods(this);
 
         setupFirebaseAuth();
     }
 
 
-    private void activeTakePhoto() {
+    public void activeTakePhoto() {
         Intent takePictureIntent = new Intent(MediaStore.ACTION_IMAGE_CAPTURE);
         if (ActivityCompat.checkSelfPermission(this, Manifest.permission.CAMERA) != PackageManager.PERMISSION_GRANTED && ActivityCompat.checkSelfPermission(this, Manifest.permission.WRITE_EXTERNAL_STORAGE) != PackageManager.PERMISSION_GRANTED) {
             ActivityCompat.requestPermissions(FoodActivity.this, new String[]{Manifest.permission.CAMERA, Manifest.permission.WRITE_EXTERNAL_STORAGE}, 300);
@@ -351,6 +354,8 @@ public class FoodActivity extends AppCompatActivity implements PicturesAdapter.L
         myRef = mFirebaseDatabase.getReference();
         myRef2 = mFirebaseDatabase.getReference("user_photos");
 
+
+
         myRef2.addValueEventListener(new ValueEventListener() {
             @Override
             public void onDataChange(DataSnapshot dataSnapshot) {
@@ -402,4 +407,23 @@ public class FoodActivity extends AppCompatActivity implements PicturesAdapter.L
             startActivity(intent);
         }
     }
+
+
+
+
+
+    private int getItemIndex (MyImage image) {
+        int index = -1;
+
+        for (int i = 0; i < images.size(); i++) {
+
+            if (images.get(i).getPath().equals(image.getPath())) {
+                index = i;
+            }
+
+        }
+        return index;
+    }
+
+
 }

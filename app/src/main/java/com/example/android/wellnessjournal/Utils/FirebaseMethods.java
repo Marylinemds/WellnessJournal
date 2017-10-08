@@ -31,6 +31,8 @@ import com.google.firebase.storage.StorageReference;
 import com.google.firebase.storage.UploadTask;
 
 
+import java.util.List;
+
 import static com.example.android.wellnessjournal.R.string.auth_failed;
 
 /**
@@ -48,6 +50,7 @@ public class FirebaseMethods {
     private String userID;
     private FirebaseDatabase mFirebaseDatabase;
     private DatabaseReference myRef;
+    private DatabaseReference myRef2;
     private StorageReference mStorageReference;
 
     private Context mContext;
@@ -59,8 +62,9 @@ public class FirebaseMethods {
         mFirebaseDatabase = FirebaseDatabase.getInstance();
         mStorageReference = FirebaseStorage.getInstance().getReference();
         myRef = mFirebaseDatabase.getReference();
+        myRef2 = mFirebaseDatabase.getReference("user_photos");
 
-        if(mAuth.getCurrentUser() != null){
+        if (mAuth.getCurrentUser() != null) {
             userID = mAuth.getCurrentUser().getUid();
         }
     }
@@ -68,11 +72,12 @@ public class FirebaseMethods {
 
     /**
      * Register a new email and password to Firebase Authentication
+     *
      * @param email
      * @param password
      * @param username
      */
-    public void registerNewEmail(final String email, String password, final String username){
+    public void registerNewEmail(final String email, String password, final String username) {
         mAuth.createUserWithEmailAndPassword(email, password)
                 .addOnCompleteListener(new OnCompleteListener<AuthResult>() {
                     @Override
@@ -86,8 +91,7 @@ public class FirebaseMethods {
                             Toast.makeText(mContext, auth_failed,
                                     Toast.LENGTH_SHORT).show();
 
-                        }
-                        else if(task.isSuccessful()){
+                        } else if (task.isSuccessful()) {
                             userID = mAuth.getCurrentUser().getUid();
                             Log.d(TAG, "onComplete: Authstate changed: " + userID);
                             sendVerificationEmail();
@@ -97,18 +101,18 @@ public class FirebaseMethods {
                 });
     }
 
-    public boolean checkIfUsernameExists(String username, DataSnapshot datasnapshot){
+    public boolean checkIfUsernameExists(String username, DataSnapshot datasnapshot) {
         Log.d(TAG, "checkIfUsernameExists: checking if " + username + " already exists.");
 
         User user = new User();
 
-        for (DataSnapshot ds: datasnapshot.child(userID).getChildren()){
+        for (DataSnapshot ds : datasnapshot.child(userID).getChildren()) {
             Log.d(TAG, "checkIfUsernameExists: datasnapshot: " + ds);
 
             user.setUsername(ds.getValue(User.class).getUsername());
             Log.d(TAG, "checkIfUsernameExists: username: " + user.getUsername());
 
-            if(StringManipulation.expandUsername(user.getUsername()).equals(username)){
+            if (StringManipulation.expandUsername(user.getUsername()).equals(username)) {
                 Log.d(TAG, "checkIfUsernameExists: FOUND A MATCH: " + user.getUsername());
                 return true;
             }
@@ -116,29 +120,29 @@ public class FirebaseMethods {
         return false;
     }
 
-    public int getImageCount(DataSnapshot dataSnapshot){
+    public int getImageCount(DataSnapshot dataSnapshot) {
         int count = 0;
-        for(DataSnapshot ds: dataSnapshot
+        for (DataSnapshot ds : dataSnapshot
                 .child(mContext.getString(R.string.dbname_user_photos))
                 .child(FirebaseAuth.getInstance().getCurrentUser().getUid())
-                .getChildren()){
+                .getChildren()) {
             count++;
         }
         return count;
     }
 
-    public void sendVerificationEmail(){
+    public void sendVerificationEmail() {
         FirebaseUser user = FirebaseAuth.getInstance().getCurrentUser();
 
-        if(user !=null){
+        if (user != null) {
             user.sendEmailVerification()
                     .addOnCompleteListener(new OnCompleteListener<Void>() {
                         @Override
                         public void onComplete(@NonNull Task<Void> task) {
-                            if(task.isSuccessful()){
+                            if (task.isSuccessful()) {
 
 
-                            }else{
+                            } else {
                                 Toast.makeText(mContext, "couldn't send verification email", Toast.LENGTH_SHORT).show();
                             }
                         }
@@ -146,12 +150,13 @@ public class FirebaseMethods {
         }
     }
 
-    private void addPhotoToDatabase(String picturePath, String url){
+    private void addPhotoToDatabase(String picturePath, String url) {
         Log.d(TAG, "addPhotoToDatabase: adding photo to database.");
 
-        String newPhotoKey = myRef.child(mContext.getString(R.string.dbname_photos)).push().getKey();
+        String newPhotoKey = myRef.child(mContext.getString(R.string.dbname_user_photos)).push().getKey();
 
-
+        myRef.child(mContext.getString(R.string.dbname_user_photos))
+                .child(newPhotoKey).child("photoKey").setValue(newPhotoKey);
         myRef.child(mContext.getString(R.string.dbname_user_photos))
                 .child(newPhotoKey).child("datetimeLong").setValue(System.currentTimeMillis());
         myRef.child(mContext.getString(R.string.dbname_user_photos))
@@ -164,47 +169,15 @@ public class FirebaseMethods {
                 .child(newPhotoKey).child("user_id").setValue(FirebaseAuth.getInstance().getCurrentUser().getUid());
 
 
-        /*
-        //insert into database
-        myRef.child(mContext.getString(R.string.dbname_user_photos))
-                .child(newPhotoKey).setValue(newPhotoKey);
-        myRef.child(mContext.getString(R.string.dbname_user_photos))
-                .child(newPhotoKey).setValue(System.currentTimeMillis());
-        myRef.child(mContext.getString(R.string.dbname_user_photos))
-                .child(newPhotoKey).setValue(url);
-        myRef.child(mContext.getString(R.string.dbname_user_photos))
-                .child(newPhotoKey).setValue("");
-        myRef.child(mContext.getString(R.string.dbname_user_photos))
-                .child(newPhotoKey).setValue(FirebaseAuth.getInstance().getCurrentUser().getUid());
-
-                */
-
-       // myRef.child(mContext.getString(R.string.dbname_photos)).child(newPhotoKey).setValue(photo);
-
     }
 
-    public static class Userq {
 
-        public String date_of_birth;
-        public String full_name;
-        public String nickname;
-
-        public Userq(String date_of_birth, String full_name) {
-            // ...
-        }
-
-        public Userq(String date_of_birth, String full_name, String nickname) {
-            // ...
-        }
-
-    }
-
-    public void uploadNewPhoto(String photoType, final int count, Bitmap bm, final String picturePath){
+    public void uploadNewPhoto(String photoType, final int count, Bitmap bm, final String picturePath) {
         Log.d(TAG, "uploadNewPhoto: attempting to uplaod new photo.");
 
         FilePaths filePaths = new FilePaths();
         //case1) new photo
-        if(photoType.equals(mContext.getString(R.string.new_photo))){
+        if (photoType.equals(mContext.getString(R.string.new_photo))) {
             Log.d(TAG, "uploadNewPhoto: uploading NEW photo.");
 
             String user_id = FirebaseAuth.getInstance().getCurrentUser().getUid();
@@ -242,7 +215,7 @@ public class FirebaseMethods {
                 public void onProgress(UploadTask.TaskSnapshot taskSnapshot) {
                     double progress = (100 * taskSnapshot.getBytesTransferred()) / taskSnapshot.getTotalByteCount();
 
-                    if(progress - 15 > mPhotoUploadProgress){
+                    if (progress - 15 > mPhotoUploadProgress) {
                         Toast.makeText(mContext, "photo upload progress: " + String.format("%.0f", progress) + "%", Toast.LENGTH_SHORT).show();
                         mPhotoUploadProgress = progress;
                     }
@@ -253,7 +226,7 @@ public class FirebaseMethods {
 
         }
         //case new profile photo
-        else if(photoType.equals(mContext.getString(R.string.profile_photo))){
+        else if (photoType.equals(mContext.getString(R.string.profile_photo))) {
             Log.d(TAG, "uploadNewPhoto: uploading new PROFILE photo");
 
 
@@ -307,18 +280,21 @@ public class FirebaseMethods {
             });
         }
 */
+
+
+        }
     }
 
+    public void removeFromDatabase(String photoKey) {
+
+
+        myRef2.child(photoKey).setValue(null);
 
 
 
+    }
 
-
-
-
-
-
-}}
+}
 
 
 

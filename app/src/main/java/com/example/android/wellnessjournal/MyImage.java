@@ -10,7 +10,7 @@ import java.util.Calendar;
  */
 
 public class MyImage {
-    private String title, description, path, photo_id, user_id, url;
+    private String title, description, path, photo_id, user_id, url, photoKey;
     private Calendar datetime;
     private long datetimeLong;
     protected SimpleDateFormat df = new SimpleDateFormat("MMMM d, yy  h:mm");
@@ -19,7 +19,16 @@ public class MyImage {
         return url;
     }
 
+    public String getPhotoKey() {
+        return photoKey;
+    }
+
+    public void setPhotoKey(String photoKey) {
+        this.photoKey = photoKey;
+    }
+
     public void setUrl(String url) {
+
         this.url = url;
     }
 
@@ -50,9 +59,10 @@ public class MyImage {
 
     }
 
-    public MyImage( String description, String path, String user_id, long datetime, String url) {
+    public MyImage( String description, String path, String user_id, long datetime, String url, String photoKey) {
         //this.title = title;
         this.description = description;
+        this.photoKey = photoKey;
         this.path = path;
         //this.photo_id = photo_id;
         this.user_id = user_id;

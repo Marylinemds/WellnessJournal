@@ -1,30 +1,22 @@
 package com.example.android.wellnessjournal;
 
+import android.app.Dialog;
 import android.content.Context;
 import android.database.Cursor;
-import android.graphics.Bitmap;
-import android.graphics.BitmapFactory;
-import android.graphics.drawable.BitmapDrawable;
-import android.graphics.drawable.Drawable;
-import android.media.Image;
-import android.media.ThumbnailUtils;
 import android.support.v7.widget.RecyclerView;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.Toast;
 
 import com.example.android.wellnessjournal.Food.FoodActivity;
 import com.example.android.wellnessjournal.Utils.FirebaseMethods;
-import com.example.android.wellnessjournal.Utils.ImageManager;
 import com.squareup.picasso.Picasso;
 
-import java.util.ArrayList;
 import java.util.List;
-
-import static com.example.android.wellnessjournal.R.drawable.add_picture;
 
 /**
  * Created by Maryline on 9/18/2017.
@@ -34,6 +26,7 @@ import static com.example.android.wellnessjournal.R.drawable.add_picture;
 public class PicturesAdapter extends RecyclerView.Adapter<PicturesAdapter.ImageViewHolder>{
 
     private FirebaseMethods mFirebaseMethods;
+
 
     private static final String TAG="PicturesAdapter";
 
@@ -82,22 +75,14 @@ public class PicturesAdapter extends RecyclerView.Adapter<PicturesAdapter.ImageV
 
 
     @Override
-    public void onBindViewHolder(ImageViewHolder viewHolder, int position) {
+    public void onBindViewHolder(final ImageViewHolder viewHolder, int position) {
 
         Context context = viewHolder.poster.getContext();
         Log.d(TAG, "onBindViewHolder: binding ImageViewHolder");
 
         MyImage image = images.get(position);
-       // image.getPictureUri();
-       // Bitmap bm = BitmapFactory.decodeFile(image.getPath());
 
-
-        //Bitmap bm = ImageManager.getBitmapFromURL("http://weknowyourdreams.com/single/monkey/monkey-12.jpg");
         Picasso.with(context).load(image.getUrl()).fit().centerCrop().into(viewHolder.poster);
-
-        //viewHolder.poster.setImageBitmap(ThumbnailUtils
-         //       .extractThumbnail(bm,
-           //            300, 300));
 
 
     }
@@ -125,8 +110,34 @@ public class PicturesAdapter extends RecyclerView.Adapter<PicturesAdapter.ImageV
         @Override
         public void onClick(View view) {
 
-            Toast.makeText(poster.getContext(), "BOUUUH !", Toast.LENGTH_SHORT).show();
+            //Toast.makeText(poster.getContext(), "BOUUUH !", Toast.LENGTH_SHORT).show();
+            final Dialog dialog = new Dialog(poster.getContext());
+            dialog.setContentView(R.layout.custom_dialog_box);
+            dialog.setTitle("Alert Dialog View");
+            Button btnExit = (Button) dialog.findViewById(R.id.btnExit);
+            btnExit.setOnClickListener(new View.OnClickListener() {
+                @Override public void onClick(View v) {
+                    dialog.dismiss();
+                }
+            });
+            dialog.findViewById(R.id.btnDeletePicture)
+                    .setOnClickListener(new View.OnClickListener() {
+                        @Override public void onClick(View v) {
+                            mFirebaseMethods = new FirebaseMethods(poster.getContext());
+                            MyImage image = images.get(getAdapterPosition());
+                            mFirebaseMethods.removeFromDatabase(image.getPhotoKey());
 
+                            notifyDataSetChanged();
+                            dialog.dismiss();
+
+                        }
+                    });
+
+
+            // show dialog on screen
+            dialog.show();
         }
+
+
     }
 }
