@@ -17,6 +17,8 @@ import android.widget.ImageView;
 import android.widget.Toast;
 
 import com.example.android.wellnessjournal.Food.FoodActivity;
+import com.example.android.wellnessjournal.Utils.FirebaseMethods;
+import com.example.android.wellnessjournal.Utils.ImageManager;
 import com.squareup.picasso.Picasso;
 
 import java.util.ArrayList;
@@ -30,6 +32,8 @@ import static com.example.android.wellnessjournal.R.drawable.add_picture;
 
 
 public class PicturesAdapter extends RecyclerView.Adapter<PicturesAdapter.ImageViewHolder>{
+
+    private FirebaseMethods mFirebaseMethods;
 
     private static final String TAG="PicturesAdapter";
 
@@ -84,14 +88,16 @@ public class PicturesAdapter extends RecyclerView.Adapter<PicturesAdapter.ImageV
         Log.d(TAG, "onBindViewHolder: binding ImageViewHolder");
 
         MyImage image = images.get(position);
-        image.getPictureUri();
+       // image.getPictureUri();
+       // Bitmap bm = BitmapFactory.decodeFile(image.getPath());
 
-        //Picasso.with(context).load(image.getPictureUri()).into(viewHolder.poster);
 
-        viewHolder.poster.setImageBitmap(ThumbnailUtils
-                .extractThumbnail(BitmapFactory.decodeFile(image.getPath()),
-                        300, 300));
+        //Bitmap bm = ImageManager.getBitmapFromURL("http://weknowyourdreams.com/single/monkey/monkey-12.jpg");
+        Picasso.with(context).load(image.getUrl()).fit().centerCrop().into(viewHolder.poster);
 
+        //viewHolder.poster.setImageBitmap(ThumbnailUtils
+         //       .extractThumbnail(bm,
+           //            300, 300));
 
 
     }
@@ -99,6 +105,8 @@ public class PicturesAdapter extends RecyclerView.Adapter<PicturesAdapter.ImageV
     @Override
     public int getItemCount() {
         return images.size();
+
+
     }
 
 

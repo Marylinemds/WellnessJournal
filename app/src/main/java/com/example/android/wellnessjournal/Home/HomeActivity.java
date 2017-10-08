@@ -2,6 +2,8 @@ package com.example.android.wellnessjournal.Home;
 
 import android.content.Context;
 import android.content.Intent;
+import android.graphics.Bitmap;
+import android.media.ThumbnailUtils;
 import android.support.annotation.NonNull;
 import android.support.design.widget.NavigationView;
 import android.support.v4.view.GravityCompat;
@@ -20,6 +22,7 @@ import com.example.android.wellnessjournal.Login.LoginActivity;
 import com.example.android.wellnessjournal.PicturesAdapter;
 import com.example.android.wellnessjournal.R;
 import com.example.android.wellnessjournal.Utils.BottomNavigationViewHelper;
+import com.example.android.wellnessjournal.Utils.ImageManager;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
 import com.ittianyu.bottomnavigationviewex.BottomNavigationViewEx;
@@ -45,6 +48,8 @@ public class HomeActivity extends AppCompatActivity implements NavigationView.On
         Log.d(TAG, "onCreate: starting.");
 
         ImageView test = (ImageView) findViewById(R.id.testPicasso);
+
+
         Picasso.with(this).load("https://upload.wikimedia.org/wikipedia/commons/thumb/2/20/S" +
                 "aimiri_sciureus-1_Luc_Viatour.jpg/640px-Saimiri_sciureus-1_Luc_Viatour.jpg").into(test);
 

@@ -10,19 +10,30 @@ import java.util.Calendar;
  */
 
 public class MyImage {
-    private String title, description, path, photo_id, user_id;
+    private String title, description, path, photo_id, user_id, url;
     private Calendar datetime;
     private long datetimeLong;
     protected SimpleDateFormat df = new SimpleDateFormat("MMMM d, yy  h:mm");
 
-    public String getPhoto_id() {
-        return photo_id;
+    public String getUrl() {
+        return url;
     }
 
-    public void setPhoto_id(String photo_id) {
-        this.photo_id = photo_id;
+    public void setUrl(String url) {
+        this.url = url;
     }
 
+    /*
+
+
+        public String getPhoto_id() {
+            return photo_id;
+        }
+
+        public void setPhoto_id(String photo_id) {
+            this.photo_id = photo_id;
+        }
+    */
     public String getUser_id() {
         return user_id;
     }
@@ -31,34 +42,32 @@ public class MyImage {
         this.user_id = user_id;
     }
 
-    public Uri getPictureUri() {
-        return pictureUri;
 
-    }
 
-    public void setPictureUri(Uri pictureUri) {
-        this.pictureUri = pictureUri;
-    }
 
-    private Uri pictureUri;
 
     public MyImage() {
 
     }
 
-    /**
-     * Gets title.
-     *
-     * @return Value of title.
-     */
-    public String getTitle() { return title; }
+    public MyImage( String description, String path, String user_id, long datetime, String url) {
+        //this.title = title;
+        this.description = description;
+        this.path = path;
+        //this.photo_id = photo_id;
+        this.user_id = user_id;
+        this.datetimeLong = datetime;
+        this.url = url;
+        //this.pictureUri = pictureUri;
+    }
+
 
     /**
      * Gets datetime.
      *
      * @return Value of datetime.
      */
-    public Calendar getDatetime() { return datetime; }
+    //public Calendar getDatetime() { return datetime; }
 
     /**
      * Sets new datetimeLong.
@@ -77,7 +86,7 @@ public class MyImage {
      *
      * @param datetime New value of datetime.
      */
-    public void setDatetime(Calendar datetime) { this.datetime = datetime; }
+    //public void setDatetime(Calendar datetime) { this.datetime = datetime; }
 
     /**
      * Gets description.
@@ -86,12 +95,7 @@ public class MyImage {
      */
     public String getDescription() { return description; }
 
-    /**
-     * Sets new title.
-     *
-     * @param title New value of title.
-     */
-    public void setTitle(String title) { this.title = title; }
+
 
     /**
      * Gets datetimeLong.
@@ -126,13 +130,11 @@ public class MyImage {
     @Override
     public String toString() {
         return "MyImage{" +
-                "title='" + title + '\'' +
                 ", description='" + description + '\'' +
                 ", path='" + path + '\'' +
-                ", photo_id='" + photo_id + '\'' +
                 ", user_id='" + user_id + '\'' +
                 ", datetimeLong=" + datetimeLong +
-                ", pictureUri=" + pictureUri +
+                ", url=" + url +
                 '}';
     }
 }

@@ -8,6 +8,7 @@ import android.content.pm.PackageManager;
 import android.content.res.Configuration;
 import android.database.Cursor;
 import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
 import android.net.Uri;
 import android.os.Bundle;
 import android.provider.MediaStore;
@@ -41,6 +42,7 @@ import com.example.android.wellnessjournal.Utils.BottomNavigationViewHelper;
 import com.example.android.wellnessjournal.Utils.FirebaseMethods;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
+import com.google.firebase.database.ChildEventListener;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
@@ -86,6 +88,7 @@ public class FoodActivity extends AppCompatActivity implements PicturesAdapter.L
     private FirebaseDatabase mFirebaseDatabase;
     private FirebaseAuth.AuthStateListener mAuthListener;
     private DatabaseReference myRef;
+    private DatabaseReference myRef2;
     private FirebaseMethods mFirebaseMethods;
 
     ImageView ibCamera;
@@ -235,13 +238,16 @@ public class FoodActivity extends AppCompatActivity implements PicturesAdapter.L
                     cursor.moveToFirst();
                     String picturePath = cursor.getString(column_index_data);
                     MyImage image = new MyImage();
-                    image.setTitle("Test");
+                    //image.setTitle("Test");
                     image.setDescription(
                             "test take a photo and add it to list view");
                     image.setDatetime(System.currentTimeMillis());
                     image.setPath(picturePath);
-                    image.setPictureUri(mCapturedImageURI);
+                    //image.setPictureUri(mCapturedImageURI);
                     images.add(image);
+
+                Bitmap bm = BitmapFactory.decodeFile(picturePath);
+                mFirebaseMethods.uploadNewPhoto("new_photo", images.size(), bm, picturePath );
 
 
             }
@@ -343,18 +349,28 @@ public class FoodActivity extends AppCompatActivity implements PicturesAdapter.L
         mAuth = FirebaseAuth.getInstance();
         mFirebaseDatabase = FirebaseDatabase.getInstance();
         myRef = mFirebaseDatabase.getReference();
-        myRef.addValueEventListener(new ValueEventListener() {
+        myRef2 = mFirebaseDatabase.getReference("user_photos");
+
+        myRef2.addValueEventListener(new ValueEventListener() {
             @Override
             public void onDataChange(DataSnapshot dataSnapshot) {
-                imageCount = mFirebaseMethods.getImageCount(dataSnapshot);
-                Log.d(TAG, "onDataChange: image count: " + imageCount);
+                images.clear();
+
+                for (DataSnapshot snapshot : dataSnapshot.getChildren()){
+                    MyImage image = snapshot.getValue(MyImage.class);
+                    images.add(image);
+                }
+                pictureAdapter.notifyDataSetChanged();
+
             }
 
             @Override
             public void onCancelled(DatabaseError databaseError) {
 
-            }
-        });
+            }});
+
+
+
 
 
 
