@@ -1,6 +1,7 @@
 package com.example.android.wellnessjournal.Food;
 
 import android.Manifest;
+import android.app.DatePickerDialog;
 import android.content.ContentValues;
 import android.content.Context;
 import android.content.Intent;
@@ -28,9 +29,11 @@ import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.Button;
+import android.widget.DatePicker;
 import android.widget.ExpandableListView;
 import android.widget.ImageButton;
 import android.widget.ImageView;
+import android.widget.TextView;
 import android.widget.Toast;
 import android.widget.ToggleButton;
 
@@ -56,6 +59,7 @@ import com.kosalgeek.android.photoutil.ImageLoader;
 import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.Calendar;
 import java.util.HashMap;
 import java.util.List;
 
@@ -73,6 +77,10 @@ public class FoodActivity extends AppCompatActivity implements PicturesAdapter.L
     private ExpandableListAdapter listAdapter;
     private List<String> listDataHeader;
     private HashMap<String,List<String>> listHash;
+
+    TextView tv;
+    Calendar mCurrentDate;
+    int day, month, year;
 
     private List<MyImage> images;
 
@@ -111,6 +119,28 @@ public class FoodActivity extends AppCompatActivity implements PicturesAdapter.L
         initData();
         listAdapter = new ExpandableListAdapter(this, listDataHeader, listHash);
         listView.setAdapter(listAdapter);
+
+        tv = (TextView) findViewById(R.id.datePicker);
+        mCurrentDate = Calendar.getInstance();
+
+        day = mCurrentDate.get(Calendar.DAY_OF_MONTH);
+        month = mCurrentDate.get(Calendar.MONTH);
+        year = mCurrentDate.get(Calendar.YEAR);
+
+        tv.setText(day + "/" + month + "/" + year);
+
+        tv.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                DatePickerDialog datePickerDialog = new DatePickerDialog(FoodActivity.this, new DatePickerDialog.OnDateSetListener() {
+                    @Override
+                    public void onDateSet(DatePicker datePicker, int i, int i1, int i2) {
+                        tv.setText(i2 + "/" + i1 + "/" + i);
+                    }
+                }, year, month, day);
+                datePickerDialog.show();
+            }
+        });
 
         mPicturesGrid = (RecyclerView) findViewById(R.id.rv_pictures);
 

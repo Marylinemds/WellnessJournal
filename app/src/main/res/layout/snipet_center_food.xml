@@ -11,7 +11,7 @@
 
 
         <TextView
-            android:id="@+id/textView2"
+            android:id="@+id/datePicker"
             android:layout_width="145dp"
             android:layout_height="32dp"
             android:layout_marginBottom="8dp"
