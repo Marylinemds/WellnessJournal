@@ -16,8 +16,10 @@ import android.provider.MediaStore;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.design.widget.NavigationView;
+import android.support.design.widget.TabLayout;
 import android.support.v4.app.ActivityCompat;
 import android.support.v4.view.GravityCompat;
+import android.support.v4.view.ViewPager;
 import android.support.v4.widget.DrawerLayout;
 import android.support.v7.app.ActionBarDrawerToggle;
 import android.support.v7.app.AppCompatActivity;
@@ -67,16 +69,13 @@ import java.util.List;
  * Created by Maryline on 9/16/2017.
  */
 
-public class FoodActivity extends AppCompatActivity implements PicturesAdapter.ListItemClickHandler , NavigationView.OnNavigationItemSelectedListener{
+public class FoodActivity extends AppCompatActivity implements GridTab.OnFragmentInteractionListener, DetailsTab.OnFragmentInteractionListener, ScoreTab.OnFragmentInteractionListener , NavigationView.OnNavigationItemSelectedListener{
 
     private static final String TAG = "FoodActivity";
     private Context mContext = FoodActivity.this;
     private static final int ACTIVITY_NUM = 1;
 
-    private ExpandableListView listView;
-    private ExpandableListAdapter listAdapter;
-    private List<String> listDataHeader;
-    private HashMap<String,List<String>> listHash;
+
 
     TextView tv;
     Calendar mCurrentDate;
@@ -84,11 +83,7 @@ public class FoodActivity extends AppCompatActivity implements PicturesAdapter.L
 
     private List<MyImage> images;
 
-    ToggleButton buttonGrid;
-    ToggleButton buttonList;
 
-    RecyclerView mPicturesGrid;
-    PicturesAdapter pictureAdapter;
 
     private DrawerLayout mDrawerLayout;
     private ActionBarDrawerToggle mToggle;
@@ -108,17 +103,47 @@ public class FoodActivity extends AppCompatActivity implements PicturesAdapter.L
     private Uri mCapturedImageURI;
     private int imageCount = 0;
 
+    private ViewPager viewPager;
+    private PagerAdapter pagerAdapter;
+
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_food);
         Log.d(TAG, "onCreate: started.");
 
+        TabLayout tabLayout = (TabLayout) findViewById(R.id.tablayout);
+        tabLayout.addTab(tabLayout.newTab().setText("PICTURES"));
+        tabLayout.addTab(tabLayout.newTab().setText("DETAILS"));
+        tabLayout.addTab(tabLayout.newTab().setText("SCORE"));
+        tabLayout.setTabGravity(TabLayout.GRAVITY_FILL);
 
-        listView = (ExpandableListView) findViewById(R.id.expandableListView);
-        initData();
-        listAdapter = new ExpandableListAdapter(this, listDataHeader, listHash);
-        listView.setAdapter(listAdapter);
+        viewPager = (ViewPager) findViewById(R.id.pager);
+        pagerAdapter = new PagerAdapter(getSupportFragmentManager(), tabLayout.getTabCount());
+        viewPager.setAdapter(pagerAdapter);
+        viewPager.setOnPageChangeListener(new TabLayout.TabLayoutOnPageChangeListener(tabLayout));
+
+        tabLayout.setOnTabSelectedListener(new TabLayout.OnTabSelectedListener() {
+            @Override
+            public void onTabSelected(TabLayout.Tab tab) {
+            viewPager.setCurrentItem(tab.getPosition());
+            }
+
+            @Override
+            public void onTabUnselected(TabLayout.Tab tab) {
+
+            }
+
+            @Override
+            public void onTabReselected(TabLayout.Tab tab) {
+
+            }
+        });
+
+
+
+
+
 
         tv = (TextView) findViewById(R.id.datePicker);
         mCurrentDate = Calendar.getInstance();
@@ -142,61 +167,17 @@ public class FoodActivity extends AppCompatActivity implements PicturesAdapter.L
             }
         });
 
-        mPicturesGrid = (RecyclerView) findViewById(R.id.rv_pictures);
 
 
-        GridLayoutManager layoutManager;
 
-        if (getResources().getConfiguration().orientation == Configuration.ORIENTATION_PORTRAIT) {
-            layoutManager = new GridLayoutManager(this, 3);
-        } else {
-            layoutManager = new GridLayoutManager(this, 4);
-        }
 
-        mPicturesGrid.setLayoutManager(layoutManager);
 
         images = new ArrayList<>();
 
-        pictureAdapter = new PicturesAdapter(images, this);
-
-        mPicturesGrid.setAdapter(pictureAdapter);
-
-        buttonList = (ToggleButton) findViewById(R.id.toggleButtonList);
-        buttonGrid = (ToggleButton) findViewById(R.id.toggleButtonGrid);
-
-        buttonList.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                Toast.makeText(FoodActivity.this, "YEAAAAAAAH !", Toast.LENGTH_SHORT).show();
-
-                buttonList.setActivated(true);
-                buttonList.setChecked(true);
-                buttonGrid.setActivated(false);
-                buttonGrid.setChecked(false);
-
-                listView.setVisibility(view.VISIBLE);
-                mPicturesGrid.setVisibility(view.INVISIBLE);
-            }
 
 
-        });
-
-        buttonGrid.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                Toast.makeText(FoodActivity.this, "BOUUUH !", Toast.LENGTH_SHORT).show();
-
-                buttonGrid.setActivated(true);
-                buttonGrid.setChecked(true);
-                buttonList.setActivated(false);
-                buttonList.setChecked(false);
-
-                listView.setVisibility(view.INVISIBLE);
-                mPicturesGrid.setVisibility(view.VISIBLE);
 
 
-            }
-        });
 
 
         Toolbar toptoolbar = (Toolbar) findViewById(R.id.top_toolbar);
@@ -229,9 +210,13 @@ public class FoodActivity extends AppCompatActivity implements PicturesAdapter.L
         });
 
 
+
+
         mFirebaseMethods = new FirebaseMethods(this);
 
         setupFirebaseAuth();
+
+
     }
 
 
@@ -285,7 +270,7 @@ public class FoodActivity extends AppCompatActivity implements PicturesAdapter.L
 
             }
         }//end if resultCode
-        pictureAdapter.setImages(images);
+       // pictureAdapter.setImages(images);
     }
 
 
@@ -301,48 +286,8 @@ public class FoodActivity extends AppCompatActivity implements PicturesAdapter.L
         menuItem.setChecked(true);
     }
 
-    private void initData() {
-        listDataHeader = new ArrayList<>();
-        listHash = new HashMap<>();
-
-        listDataHeader.add("Water intake");
-        listDataHeader.add("Intermittent Fasting");
-        listDataHeader.add("Special treats");
-        listDataHeader.add("General comment");
-
-        List<String> waterIntake = new ArrayList<>();
-        waterIntake.add("How much water did you have today (in mL)?");
-
-        List<String> intermittentFasting = new ArrayList<>();
-        intermittentFasting.add("How many hours between last dinner and breakfast ?");
 
 
-        List<String> specialTreats = new ArrayList<>();
-        specialTreats.add("Processed food");
-        specialTreats.add("Meat/Fish");
-        specialTreats.add("Egg");
-        specialTreats.add("Fried/Oil");
-        specialTreats.add("white sugar");
-
-        specialTreats.add("white flour");
-
-
-        List<String> generalComment = new ArrayList<>();
-        generalComment.add("Write your comment here");
-
-
-        listHash.put(listDataHeader.get(0),waterIntake);
-        listHash.put(listDataHeader.get(1),intermittentFasting);
-        listHash.put(listDataHeader.get(2),specialTreats);
-        listHash.put(listDataHeader.get(3),generalComment);
-    }
-
-
-
-    @Override
-    public void onClick(int clickedItemIndex) {
-
-    }
 
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
@@ -395,7 +340,7 @@ public class FoodActivity extends AppCompatActivity implements PicturesAdapter.L
                     MyImage image = snapshot.getValue(MyImage.class);
                     images.add(image);
                 }
-                pictureAdapter.notifyDataSetChanged();
+               // pictureAdapter.notifyDataSetChanged();
 
             }
 
@@ -456,4 +401,8 @@ public class FoodActivity extends AppCompatActivity implements PicturesAdapter.L
     }
 
 
+    @Override
+    public void onFragmentInteraction(Uri uri) {
+
+    }
 }

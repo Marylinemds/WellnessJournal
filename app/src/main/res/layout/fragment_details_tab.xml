@@ -1,0 +1,27 @@
+<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    tools:context="com.example.android.wellnessjournal.Food.DetailsTab">
+
+    <!-- TODO: Update blank fragment layout -->
+    <ExpandableListView
+        android:id="@+id/expandableListView"
+        android:layout_width="330dp"
+        android:layout_height="220dp"
+        android:layout_marginBottom="70dp"
+        android:layout_marginEnd="42dp"
+        android:layout_marginStart="42dp"
+        android:layout_marginTop="200dp"
+        android:addStatesFromChildren="false"
+        android:animateLayoutChanges="true"
+        android:background="@color/white"
+        android:divider="@color/grey"
+        android:dividerHeight="1dp"
+        android:footerDividersEnabled="false"
+        android:hapticFeedbackEnabled="false"
+        android:headerDividersEnabled="true"
+        />
+
+</FrameLayout>

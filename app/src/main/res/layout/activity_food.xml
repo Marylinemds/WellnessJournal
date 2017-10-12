@@ -32,12 +32,20 @@
 
             <include layout="@layout/snipet_center_food"/>
 
+            <android.support.v4.view.ViewPager
+                android:layout_width="match_parent"
+                android:layout_height="fill_parent"
+                android:id="@+id/pager"/>
+
+
         </RelativeLayout>
 
         <!-- Navigation Bar -->
         <include layout="@layout/layout_bottom_navigation_view"/>
 
     </RelativeLayout>
+
+
 
     <android.support.design.widget.NavigationView
         android:id="@+id/nav_view"

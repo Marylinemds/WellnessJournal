@@ -7,7 +7,8 @@
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         tools:layout_editor_absoluteY="0dp"
-        tools:layout_editor_absoluteX="0dp">
+        tools:layout_editor_absoluteX="0dp"
+        android:paddingTop="450dp">
 
 
         <TextView
@@ -31,130 +32,8 @@
             app:layout_constraintTop_toBottomOf="@+id/linearLayout"
             app:layout_constraintVertical_bias="0.38" />
 
-        <ToggleButton
-            android:id="@+id/toggleButtonList"
-            android:onClick="onClickSwitchToList"
-            android:layout_width="26dp"
-            android:layout_height="26dp"
-            android:layout_marginBottom="8dp"
-            android:layout_marginLeft="8dp"
-            android:layout_marginRight="8dp"
-            android:layout_marginTop="8dp"
-            android:background="@drawable/tg_list"
-            android:textOff=""
-            android:textOn=""
-            app:layout_constraintBottom_toTopOf="@+id/expandableListView"
-            app:layout_constraintHorizontal_bias="0.95"
-            app:layout_constraintLeft_toLeftOf="parent"
-            app:layout_constraintRight_toRightOf="parent"
-            app:layout_constraintTop_toBottomOf="@+id/linearLayout"
-            app:layout_constraintVertical_bias="0.548" />
-
-        <ToggleButton
-            android:id="@+id/toggleButtonGrid"
-            android:onClick="OnClickSwitchToGrid"
-            android:layout_width="22dp"
-            android:layout_height="22dp"
-            android:layout_marginBottom="8dp"
-            android:layout_marginLeft="8dp"
-            android:layout_marginRight="8dp"
-            android:layout_marginTop="8dp"
-            android:background="@drawable/tg_grid"
-            android:textOff=""
-            android:textOn=""
-            app:layout_constraintBottom_toTopOf="@+id/expandableListView"
-            app:layout_constraintHorizontal_bias="0.05"
-            app:layout_constraintLeft_toLeftOf="parent"
-            app:layout_constraintRight_toRightOf="parent"
-            app:layout_constraintTop_toBottomOf="@+id/linearLayout"
-            app:layout_constraintVertical_bias="0.513" />
-
-        <RelativeLayout
-            android:id="@+id/linearLayout"
-            android:layout_width="330dp"
-            android:layout_height="130dp"
-            android:layout_marginEnd="42dp"
-            android:layout_marginLeft="8dp"
-            android:layout_marginRight="8dp"
-            android:layout_marginStart="42dp"
-            android:layout_marginTop="75dp"
-            android:background="@color/white"
-            android:orientation="horizontal"
-            app:layout_constraintHorizontal_bias="0.507"
-            app:layout_constraintLeft_toLeftOf="parent"
-            app:layout_constraintRight_toRightOf="parent"
-            app:layout_constraintTop_toTopOf="parent">
-
-            <TextView
-                android:id="@+id/textScore"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_centerHorizontal="true"
-                android:fontFamily="sans-serif"
-                android:paddingTop="16dp"
-                android:text="Your daily score is :"
-                android:textAllCaps="false"
-                android:textSize="12sp"
-                tools:text="Your daily score is :" />
-
-            <TextView
-                android:id="@+id/score"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_centerInParent="true"
-                android:fontFamily="serif"
-                android:text="350 (P)"
-                android:textAllCaps="false"
-                android:textColor="@color/black"
-                android:textSize="56sp"
-                tools:text="350 (P)" />
 
 
-        </RelativeLayout>
-
-        <ExpandableListView
-            android:id="@+id/expandableListView"
-            android:layout_width="330dp"
-            android:layout_height="220dp"
-            android:layout_marginBottom="70dp"
-            android:layout_marginEnd="42dp"
-            android:layout_marginLeft="8dp"
-            android:layout_marginRight="8dp"
-            android:layout_marginStart="42dp"
-            android:addStatesFromChildren="false"
-            android:animateLayoutChanges="true"
-            android:background="@color/white"
-            android:divider="@color/grey"
-            android:dividerHeight="1dp"
-            android:footerDividersEnabled="false"
-            android:hapticFeedbackEnabled="false"
-            android:headerDividersEnabled="true"
-            app:layout_constraintBottom_toBottomOf="parent"
-            app:layout_constraintLeft_toLeftOf="parent"
-            app:layout_constraintRight_toRightOf="parent" />
-
-        <LinearLayout
-            android:layout_width="330dp"
-            android:layout_height="220dp"
-            android:layout_marginBottom="70dp"
-            android:layout_marginEnd="42dp"
-            android:layout_marginLeft="8dp"
-            android:layout_marginRight="8dp"
-            android:layout_marginStart="42dp"
-            app:layout_constraintBottom_toBottomOf="parent"
-            app:layout_constraintLeft_toLeftOf="parent"
-            app:layout_constraintRight_toRightOf="parent">
-
-
-        <android.support.v7.widget.RecyclerView
-            android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            android:id="@+id/rv_pictures"
-            android:visibility="invisible">
-
-        </android.support.v7.widget.RecyclerView>
-
-        </LinearLayout>
 
 
     </android.support.constraint.ConstraintLayout>
