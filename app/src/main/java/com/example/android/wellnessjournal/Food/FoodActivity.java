@@ -60,6 +60,8 @@ import com.kosalgeek.android.photoutil.ImageLoader;
 
 import java.io.FileNotFoundException;
 import java.io.IOException;
+import java.text.DateFormat;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.HashMap;
@@ -69,20 +71,19 @@ import java.util.List;
  * Created by Maryline on 9/16/2017.
  */
 
-public class FoodActivity extends AppCompatActivity implements GridTab.OnFragmentInteractionListener, DetailsTab.OnFragmentInteractionListener, ScoreTab.OnFragmentInteractionListener , NavigationView.OnNavigationItemSelectedListener{
+public class FoodActivity extends AppCompatActivity implements PicturesAdapter.ListItemClickHandler, GridTab.OnFragmentInteractionListener, DetailsTab.OnFragmentInteractionListener, ScoreTab.OnFragmentInteractionListener , NavigationView.OnNavigationItemSelectedListener{
 
     private static final String TAG = "FoodActivity";
     private Context mContext = FoodActivity.this;
     private static final int ACTIVITY_NUM = 1;
 
-
-
     TextView tv;
     Calendar mCurrentDate;
     int day, month, year;
 
-    private List<MyImage> images;
+    PicturesAdapter pictureAdapter;
 
+    private List<MyImage> images;
 
 
     private DrawerLayout mDrawerLayout;
@@ -118,15 +119,25 @@ public class FoodActivity extends AppCompatActivity implements GridTab.OnFragmen
         tabLayout.addTab(tabLayout.newTab().setText("SCORE"));
         tabLayout.setTabGravity(TabLayout.GRAVITY_FILL);
 
+
+
         viewPager = (ViewPager) findViewById(R.id.pager);
+
+
         pagerAdapter = new PagerAdapter(getSupportFragmentManager(), tabLayout.getTabCount());
         viewPager.setAdapter(pagerAdapter);
+
         viewPager.setOnPageChangeListener(new TabLayout.TabLayoutOnPageChangeListener(tabLayout));
+
+
+
+
 
         tabLayout.setOnTabSelectedListener(new TabLayout.OnTabSelectedListener() {
             @Override
             public void onTabSelected(TabLayout.Tab tab) {
             viewPager.setCurrentItem(tab.getPosition());
+
             }
 
             @Override
@@ -145,19 +156,24 @@ public class FoodActivity extends AppCompatActivity implements GridTab.OnFragmen
 
 
 
-        tv = (TextView) findViewById(R.id.datePicker);
+        tv = (TextView) findViewById(R.id.ic_date);
         mCurrentDate = Calendar.getInstance();
+
+        DateFormat dateInstance = SimpleDateFormat.getDateInstance();
+        String defaultDate = dateInstance.format(Calendar.getInstance().getTime());
+
 
         day = mCurrentDate.get(Calendar.DAY_OF_MONTH);
         month = mCurrentDate.get(Calendar.MONTH);
         year = mCurrentDate.get(Calendar.YEAR);
 
-        tv.setText(day + "/" + month + "/" + year);
+        tv.setText(defaultDate);
 
-        tv.setOnClickListener(new View.OnClickListener() {
+
+       /* tv.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                DatePickerDialog datePickerDialog = new DatePickerDialog(FoodActivity.this, new DatePickerDialog.OnDateSetListener() {
+               DatePickerDialog datePickerDialog = new DatePickerDialog(FoodActivity.this, new DatePickerDialog.OnDateSetListener() {
                     @Override
                     public void onDateSet(DatePicker datePicker, int i, int i1, int i2) {
                         tv.setText(i2 + "/" + i1 + "/" + i);
@@ -165,18 +181,14 @@ public class FoodActivity extends AppCompatActivity implements GridTab.OnFragmen
                 }, year, month, day);
                 datePickerDialog.show();
             }
+
         });
 
-
-
-
-
+*/
 
         images = new ArrayList<>();
 
-
-
-
+        pictureAdapter = new PicturesAdapter(images, this);
 
 
 
@@ -195,10 +207,7 @@ public class FoodActivity extends AppCompatActivity implements GridTab.OnFragmen
         setupBottomNavigationView();
 
 
-
-
         ibCamera = (ImageView) findViewById(R.id.ic_camera);
-
 
 
         ibCamera.setOnClickListener(new View.OnClickListener() {
@@ -270,7 +279,7 @@ public class FoodActivity extends AppCompatActivity implements GridTab.OnFragmen
 
             }
         }//end if resultCode
-       // pictureAdapter.setImages(images);
+        pictureAdapter.setImages(images);
     }
 
 
@@ -340,7 +349,7 @@ public class FoodActivity extends AppCompatActivity implements GridTab.OnFragmen
                     MyImage image = snapshot.getValue(MyImage.class);
                     images.add(image);
                 }
-               // pictureAdapter.notifyDataSetChanged();
+               pictureAdapter.notifyDataSetChanged();
 
             }
 
@@ -403,6 +412,11 @@ public class FoodActivity extends AppCompatActivity implements GridTab.OnFragmen
 
     @Override
     public void onFragmentInteraction(Uri uri) {
+
+    }
+
+    @Override
+    public void onClick(int clickedItemIndex) {
 
     }
 }

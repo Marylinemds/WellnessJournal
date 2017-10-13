@@ -1,23 +1,40 @@
 package com.example.android.wellnessjournal.Food;
 
+import android.Manifest;
+import android.app.Activity;
+import android.content.ContentValues;
 import android.content.Context;
+import android.content.Intent;
+import android.content.pm.PackageManager;
 import android.content.res.Configuration;
+import android.database.Cursor;
+import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
 import android.net.Uri;
 import android.os.Bundle;
+import android.provider.MediaStore;
 import android.support.annotation.Nullable;
+import android.support.v4.app.ActivityCompat;
 import android.support.v4.app.Fragment;
+import android.support.v7.app.ActionBarActivity;
+import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.GridLayoutManager;
 import android.support.v7.widget.RecyclerView;
+import android.support.v7.widget.Toolbar;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.ImageView;
 
 import com.example.android.wellnessjournal.MyImage;
 import com.example.android.wellnessjournal.PicturesAdapter;
 import com.example.android.wellnessjournal.R;
+import com.example.android.wellnessjournal.Utils.FirebaseMethods;
 
 import java.util.ArrayList;
 import java.util.List;
+
+import static android.app.Activity.RESULT_OK;
 
 /**
  * A simple {@link Fragment} subclass.
@@ -35,13 +52,20 @@ public class GridTab extends Fragment implements PicturesAdapter.ListItemClickHa
     // TODO: Rename parameter arguments, choose names that match
     // the fragment initialization parameters, e.g. ARG_ITEM_NUMBER
 
+    ImageView ibCamera;
     private List<MyImage> images;
+
+    FirebaseMethods mFirebaseMethods;
+    final int CAMERA_REQUEST = 1100;
+
 
     @Override
     public void onViewCreated(View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
 
         mPicturesGrid = (RecyclerView) view.findViewById(R.id.rv_pictures);
+
+        mFirebaseMethods = new FirebaseMethods(getContext());
 
 
         GridLayoutManager layoutManager;
@@ -54,11 +78,17 @@ public class GridTab extends Fragment implements PicturesAdapter.ListItemClickHa
 
         mPicturesGrid.setLayoutManager(layoutManager);
 
-        images = new ArrayList<>();
+        images = new ArrayList();
+
 
         pictureAdapter = new PicturesAdapter(images, this);
 
         mPicturesGrid.setAdapter(pictureAdapter);
+
+        ibCamera = (ImageView) view.findViewById(R.id.ic_camera);
+
+
+
     }
 
     private static final String ARG_PARAM1 = "param1";
@@ -154,4 +184,6 @@ public class GridTab extends Fragment implements PicturesAdapter.ListItemClickHa
         // TODO: Update argument type and name
         void onFragmentInteraction(Uri uri);
     }
+
+
 }

@@ -2,6 +2,7 @@ package com.example.android.wellnessjournal.Food;
 
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
+import android.support.v4.app.FragmentPagerAdapter;
 import android.support.v4.app.FragmentStatePagerAdapter;
 
 /**
@@ -24,6 +25,7 @@ public class PagerAdapter extends FragmentStatePagerAdapter {
             case 0:
                 GridTab gridTab = new GridTab();
                 return gridTab;
+
             case 1:
                 DetailsTab detailsTab = new DetailsTab();
                 return detailsTab;

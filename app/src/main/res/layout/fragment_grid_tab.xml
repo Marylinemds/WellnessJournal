@@ -1,18 +1,18 @@
+<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    tools:context="com.example.android.wellnessjournal.Food.DetailsTab">
 
-
-    <!-- TODO: Update blank fragment layout -->
     <LinearLayout
+    android:orientation="vertical"
         xmlns:android="http://schemas.android.com/apk/res/android"
         xmlns:tools="http://schemas.android.com/tools"
         xmlns:app="http://schemas.android.com/apk/res-auto"
         tools:context="com.example.android.wellnessjournal.Food.GridTab"
-        android:layout_width="330dp"
-        android:layout_height="220dp"
-        android:layout_marginBottom="70dp"
-        android:layout_marginEnd="42dp"
-        android:layout_marginLeft="8dp"
-        android:layout_marginRight="8dp"
-        android:layout_marginStart="42dp"
+        android:layout_width="match_parent"
+        android:layout_height="fill_parent"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintLeft_toLeftOf="parent"
         app:layout_constraintRight_toRightOf="parent">
@@ -21,11 +21,14 @@
         <android.support.v7.widget.RecyclerView
             android:layout_width="match_parent"
             android:layout_height="match_parent"
+            android:background="@color/grey"
             android:id="@+id/rv_pictures"
             android:visibility="visible">
 
         </android.support.v7.widget.RecyclerView>
 
     </LinearLayout>
+
+    </FrameLayout>
 
 
